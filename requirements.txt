@@ -3,3 +3,7 @@ psycopg2-binary
 python-dotenv
 unidecode
 pytest
+flask
+flask-sqlalchemy
+flask-login
+flask-bcrypt
