@@ -1,5 +1,0 @@
-dropbox
-python-dotenv
-pandas
-sqlalchemy
-pg8000
