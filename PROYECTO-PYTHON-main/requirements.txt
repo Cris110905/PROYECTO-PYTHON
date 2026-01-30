@@ -1,0 +1,37 @@
+# =============================================================================
+# DEPENDENCIAS DEL PROYECTO ETL
+# =============================================================================
+
+# Base de datos
+sqlalchemy>=2.0.0
+pg8000>=1.30.0
+
+# Procesamiento de datos
+pandas>=2.0.0
+
+# Variables de entorno
+python-dotenv>=1.0.0
+
+# Dropbox (opcional - para descargar archivos de la nube)
+dropbox>=11.0.0
+
+# Automatización
+schedule>=1.2.0
+
+# =============================================================================
+# DEPENDENCIAS OPCIONALES (descomentar si se necesitan)
+# =============================================================================
+
+# Web (si se implementa interfaz web)
+# flask>=3.0.0
+# flask-sqlalchemy>=3.0.0
+# flask-login>=0.6.0
+
+# Testing
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
+
+# Linting y formateo
+# black>=23.0.0
+# flake8>=6.0.0
+# isort>=5.0.0
