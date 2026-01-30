@@ -1,0 +1,2 @@
+cod_cliente;fecha_exp;fecha_exp_valida;fecha_exp_ok;fecha_exp_ko;numero_tarjeta_valido;motivo_rechazo
+C001;2026-09;True;Y;N;False;Número de tarjeta inválido
