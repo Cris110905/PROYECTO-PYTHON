@@ -1,7 +1,5 @@
-pandas
-psycopg2-binary
+dropbox
 python-dotenv
-unidecode
-pytest
-schedule
-
+pandas
+sqlalchemy
+pg8000
