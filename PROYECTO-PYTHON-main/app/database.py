@@ -144,12 +144,37 @@ class Database:
             return 0
 
         try:
+            # Obtener clientes existentes para evitar duplicados
+            existing_clients = self.get_existing_clients()
+            
+            # Filtrar clientes que ya existen (basado en cod_cliente)
+            initial_count = len(df)
+            df_new = df[~df["cod_cliente"].isin(existing_clients)]
+            
+            skipped_count = initial_count - len(df_new)
+            if skipped_count > 0:
+                logger.info(f"  ⚠ Se omitieron {skipped_count} clientes que ya existen en la BD")
+            
+            if df_new.empty:
+                logger.info("  ✓ No hay clientes nuevos para insertar")
+                return 0
+
+            # Definir columnas esperadas en la tabla clients
+            expected_cols = [
+                "cod_cliente", "nombre", "apellido1", "apellido2", 
+                "dni", "dni_hash", "correo", "telefono"
+            ]
+            
+            # Filtrar solo las columnas que existen
+            cols_to_insert = [c for c in expected_cols if c in df_new.columns]
+            df_final = df_new[cols_to_insert]
+
             engine = self.get_engine()
             with engine.begin() as conn:
-                df.to_sql("clients", con=conn, if_exists="append", index=False)
+                df_final.to_sql("clients", con=conn, if_exists="append", index=False)
 
-            count = len(df)
-            logger.info(f"✓ {count} registros de clientes insertados correctamente")
+            count = len(df_final)
+            logger.info(f"  ✓ {count} registros de clientes nuevos insertados correctamente")
             return count
 
         except SQLAlchemyError as e:
@@ -171,11 +196,36 @@ class Database:
             return 0
 
         try:
+            # Obtener clientes existentes para verificar integridad referencial
+            existing_clients = self.get_existing_clients()
+            
+            # Filtrar tarjetas cuyos clientes existen en BD
+            initial_count = len(df)
+            df_valid_clients = df[df["cod_cliente"].isin(existing_clients)]
+            
+            skipped_count = initial_count - len(df_valid_clients)
+            if skipped_count > 0:
+                logger.info(f"  ⚠ Se omitieron {skipped_count} tarjetas de clientes no existentes en la BD")
+            
+            if df_valid_clients.empty:
+                logger.info("  ✓ No hay tarjetas válidas para insertar (clientes no encontrados)")
+                return 0
+
+            # Definir columnas esperadas en la tabla tarjetas
+            expected_cols = [
+                "cod_cliente", "numero_tarjeta_hash", "numero_tarjeta_masked", 
+                "fecha_exp", "cvv_hash"
+            ]
+            
+            # Filtrar solo las columnas que existen
+            cols_to_insert = [c for c in expected_cols if c in df_valid_clients.columns]
+            df_final = df_valid_clients[cols_to_insert]
+            
             engine = self.get_engine()
             with engine.begin() as conn:
-                df.to_sql("tarjetas", con=conn, if_exists="append", index=False)
+                df_final.to_sql("tarjetas", con=conn, if_exists="append", index=False)
 
-            count = len(df)
+            count = len(df_final)
             logger.info(f"✓ {count} registros de tarjetas insertados correctamente")
             return count
 
